@@ -32,56 +32,56 @@ export default function LoginScreen() {
             </p>
           </div>
         </div>
-        <form className="flex flex-col gap-6">
-          {/* Content */}
-          <div className="flex flex-col gap-4">
-            {/* Social logins */}
-            <div className="flex w-full gap-4">
-              <Button
-                variant="outline"
-                className="h-9 flex-1 cursor-pointer pt-1.5 pb-1.5 shadow-none"
-              >
-                <FaGithub className="h-full! w-full! text-gray-600" />
-              </Button>
-              <Button
-                variant="outline"
-                className="h-9 flex-1 cursor-pointer pt-1.5 pb-1.5 shadow-none"
-              >
-                <FaGoogle className="h-full! w-full! text-gray-600" />
-              </Button>
-              <Button
-                variant="outline"
-                className="h-9 flex-1 cursor-pointer pt-1.5 pb-1.5 shadow-none"
-              >
-                <FaApple className="h-full! w-full! text-gray-600" />
-              </Button>
-            </div>
-            {/* - or - */}
-            <div className="flex items-center gap-3">
-              <svg className="h-px flex-1">
-                <line
-                  x1="0"
-                  y1="0"
-                  x2="100%"
-                  y2="0"
-                  stroke="currentColor"
-                  strokeWidth="1"
-                  className="text-gray-300"
-                />
-              </svg>
-              <span className="text-xs text-gray-400">OR</span>
-              <svg className="h-px flex-1">
-                <line
-                  x1="0"
-                  y1="0"
-                  x2="100%"
-                  y2="0"
-                  stroke="currentColor"
-                  strokeWidth="1"
-                  className="text-gray-300"
-                />
-              </svg>
-            </div>
+        {/* Content */}
+        <div className="flex flex-col gap-4">
+          {/* Social logins */}
+          <div className="flex w-full gap-4">
+            <Button
+              variant="outline"
+              className="h-9 flex-1 cursor-pointer pt-1.5 pb-1.5 shadow-none"
+            >
+              <FaGithub className="h-full! w-full! text-gray-600" />
+            </Button>
+            <Button
+              variant="outline"
+              className="h-9 flex-1 cursor-pointer pt-1.5 pb-1.5 shadow-none"
+            >
+              <FaGoogle className="h-full! w-full! text-gray-600" />
+            </Button>
+            <Button
+              variant="outline"
+              className="h-9 flex-1 cursor-pointer pt-1.5 pb-1.5 shadow-none"
+            >
+              <FaApple className="h-full! w-full! text-gray-600" />
+            </Button>
+          </div>
+          {/* - or - */}
+          <div className="flex items-center gap-3">
+            <svg className="h-px flex-1">
+              <line
+                x1="0"
+                y1="0"
+                x2="100%"
+                y2="0"
+                stroke="currentColor"
+                strokeWidth="1"
+                className="text-gray-300"
+              />
+            </svg>
+            <span className="text-xs text-gray-400">OR</span>
+            <svg className="h-px flex-1">
+              <line
+                x1="0"
+                y1="0"
+                x2="100%"
+                y2="0"
+                stroke="currentColor"
+                strokeWidth="1"
+                className="text-gray-300"
+              />
+            </svg>
+          </div>
+          <form className="flex flex-col gap-4">
             {/* Email */}
             <div className="flex flex-col gap-1.5">
               <Label htmlFor="email">Email Address</Label>
@@ -127,12 +127,13 @@ export default function LoginScreen() {
                 Forget password?
               </a>
             </div>
-          </div>
-          {/* Login button */}
-          <div>
-            <Button className="w-full cursor-pointer">Log in</Button>
-          </div>
-        </form>
+            {/* Login button */}
+            <div>
+              <Button className="mt-2 w-full cursor-pointer">Log in</Button>
+            </div>
+          </form>
+        </div>
+
         {/* Sign up */}
         <div className="flex items-center justify-center gap-1.5">
           <span className="text-sm text-gray-600">Don't have an account?</span>
