@@ -4,15 +4,44 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { createClient } from "@/lib/supabase/client";
 import { Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { FaApple, FaGithub, FaGoogle } from "react-icons/fa";
 
-export default function LoginScreen() {
+export function LoginForm({
+  className,
+  ...props
+}: React.ComponentPropsWithoutRef<"div">) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const supabase = createClient();
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+      if (error) throw error;
+      // Update this route to redirect to an authenticated route. The user already has an active session.
+      router.push("/protected");
+    } catch (error: unknown) {
+      setError(error instanceof Error ? error.message : "An error occurred");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className="flex min-h-screen w-full items-center justify-center bg-gray-100">
@@ -81,14 +110,14 @@ export default function LoginScreen() {
               />
             </svg>
           </div>
-          <form className="flex flex-col gap-4">
+          <form onSubmit={handleLogin} className="flex flex-col gap-4">
             {/* Email */}
             <div className="flex flex-col gap-1.5">
               <Label htmlFor="email">Email Address</Label>
               <Input
                 id="email"
                 type="email"
-                placeholder="Enter your email..."
+                placeholder="m@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -100,8 +129,7 @@ export default function LoginScreen() {
               <div className="relative">
                 <Input
                   id="password"
-                  type="password"
-                  placeholder="••••••••"
+                  type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
@@ -123,13 +151,23 @@ export default function LoginScreen() {
                   Remember me
                 </Label>
               </div>
-              <a href="#" className="text-sm text-gray-600/50 underline">
-                Forget password?
-              </a>
+              <Link
+                href="/auth/forgot-password"
+                className="ml-auto inline-block text-sm text-gray-600/50 underline-offset-4 hover:underline"
+              >
+                Forgot password?
+              </Link>
             </div>
+            {error && <p className="text-sm text-red-500">{error}</p>}
             {/* Login button */}
             <div>
-              <Button className="mt-2 w-full cursor-pointer">Log in</Button>
+              <Button
+                type="submit"
+                className="mt-2 w-full cursor-pointer"
+                disabled={isLoading}
+              >
+                {isLoading ? "Logging in..." : "Log in"}
+              </Button>
             </div>
           </form>
         </div>
@@ -137,7 +175,10 @@ export default function LoginScreen() {
         {/* Sign up */}
         <div className="flex items-center justify-center gap-1.5">
           <span className="text-sm text-gray-600">Don't have an account?</span>
-          <Link href="/" className="text-sm text-gray-600 underline">
+          <Link
+            href="/auth/sign-up"
+            className="text-sm text-gray-600 underline underline-offset-4"
+          >
             Sign Up
           </Link>
         </div>
