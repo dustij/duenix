@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { createClient } from "@/lib/supabase/client";
+import { getURL } from "@/lib/utils";
 import { Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -21,7 +22,7 @@ export function LoginForm({
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleEmailLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     const supabase = createClient();
     setIsLoading(true);
@@ -38,6 +39,30 @@ export function LoginForm({
     } catch (error: unknown) {
       setError(error instanceof Error ? error.message : "An error occurred");
     } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    const supabase = createClient();
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: `${getURL()}/auth/oauth?next=/`,
+          queryParams: {
+            access_type: "offline",
+            prompt: "consent",
+          },
+        },
+      });
+
+      if (error) throw error;
+    } catch (error: unknown) {
+      setError(error instanceof Error ? error.message : "An error occurred");
       setIsLoading(false);
     }
   };
@@ -73,6 +98,7 @@ export function LoginForm({
             <Button
               variant="outline"
               className="h-9 flex-1 cursor-pointer pt-1.5 pb-1.5 shadow-none"
+              onClick={handleGoogleLogin}
             >
               <FaGoogle className="h-full! w-full! text-gray-600" />
             </Button>
@@ -109,7 +135,7 @@ export function LoginForm({
               />
             </svg>
           </div>
-          <form onSubmit={handleLogin} className="flex flex-col gap-4">
+          <form onSubmit={handleEmailLogin} className="flex flex-col gap-4">
             {/* Email */}
             <div className="flex flex-col gap-1.5">
               <Label htmlFor="email">Email Address</Label>
