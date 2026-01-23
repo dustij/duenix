@@ -22,6 +22,7 @@ export function SignUpForm({
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
@@ -31,6 +32,12 @@ export function SignUpForm({
     const supabase = createClient();
     setIsLoading(true);
     setError(null);
+
+    if (!agreedToTerms) {
+      setError("You must agree to the Terms & Conditions");
+      setIsLoading(false);
+      return;
+    }
 
     if (password !== confirmPassword) {
       setError("Passwords do not match");
@@ -43,7 +50,7 @@ export function SignUpForm({
         email,
         password,
         options: {
-          emailRedirectTo: `${window.location.origin}/protected`,
+          emailRedirectTo: `${window.location.origin}/`,
           data: {
             full_name: `${firstName + " " + lastName}`,
             email: email,
@@ -72,7 +79,7 @@ export function SignUpForm({
           {/* Welcome message */}
           <div className="flex flex-col">
             <p className="text-center font-bold">Create an Account</p>
-            <p className="text-gray-600 text-center">
+            <p className="text-center text-gray-600">
               Lets create your free account
             </p>
           </div>
@@ -181,7 +188,7 @@ export function SignUpForm({
                   className="absolute top-1/2 right-3 -translate-y-1/2 transform cursor-pointer text-gray-500 hover:text-gray-700"
                   onClick={() => setShowPassword(!showPassword)}
                 >
-                  {showPassword ? <Eye size={16} /> : <EyeOff size={16} />}
+                  {!showPassword ? <Eye size={16} /> : <EyeOff size={16} />}
                 </button>
               </div>
             </div>
@@ -201,19 +208,30 @@ export function SignUpForm({
                   className="absolute top-1/2 right-3 -translate-y-1/2 transform cursor-pointer text-gray-500 hover:text-gray-700"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                 >
-                  {showPassword ? <Eye size={16} /> : <EyeOff size={16} />}
+                  {!showConfirmPassword ? (
+                    <Eye size={16} />
+                  ) : (
+                    <EyeOff size={16} />
+                  )}
                 </button>
               </div>
             </div>
             {/* Terms & conditions */}
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2.5">
-                <Checkbox id="agree" />
+                <Checkbox
+                  id="agree"
+                  checked={agreedToTerms}
+                  onCheckedChange={(checked) =>
+                    setAgreedToTerms(checked === true)
+                  }
+                />
                 <Label htmlFor="agree" className="font-normal text-gray-600">
                   I agree to the{" "}
                   <Link
-                    href="#"
+                    href="/auth/terms"
                     className="text-sm text-gray-600/50 underline underline-offset-4"
+                    target="_blank"
                   >
                     Terms & Conditions
                   </Link>

@@ -44,7 +44,7 @@ export function UpdatePasswordForm({
       const { error } = await supabase.auth.updateUser({ password });
       if (error) throw error;
       // Update this route to redirect to an authenticated route. The user already has an active session.
-      router.push("/protected");
+      router.push("/");
     } catch (error: unknown) {
       setError(error instanceof Error ? error.message : "An error occurred");
     } finally {
@@ -54,7 +54,7 @@ export function UpdatePasswordForm({
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <Card className="border-md shadow-md">
+      <Card>
         <CardHeader>
           <CardTitle className="text-2xl">Reset Your Password</CardTitle>
           <CardDescription>
@@ -80,7 +80,7 @@ export function UpdatePasswordForm({
                     className="absolute top-1/2 right-3 -translate-y-1/2 transform cursor-pointer text-gray-500 hover:text-gray-700"
                     onClick={() => setShowPassword(!showPassword)}
                   >
-                    {showPassword ? <Eye size={16} /> : <EyeOff size={16} />}
+                    {!showPassword ? <Eye size={16} /> : <EyeOff size={16} />}
                   </button>
                 </div>
               </div>
@@ -100,7 +100,11 @@ export function UpdatePasswordForm({
                     className="absolute top-1/2 right-3 -translate-y-1/2 transform cursor-pointer text-gray-500 hover:text-gray-700"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                   >
-                    {showPassword ? <Eye size={16} /> : <EyeOff size={16} />}
+                    {!showConfirmPassword ? (
+                      <Eye size={16} />
+                    ) : (
+                      <EyeOff size={16} />
+                    )}
                   </button>
                 </div>
               </div>

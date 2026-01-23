@@ -8,7 +8,12 @@ export async function GET(request: NextRequest) {
   const token_hash = searchParams.get('token_hash')
   const type = searchParams.get('type') as EmailOtpType | null
   const _next = searchParams.get('next')
-  const next = _next?.startsWith('/') ? _next : '/'
+
+  // For password recovery, redirect to update-password page
+  // For other types (signup, etc.), use the next parameter or default to home
+  const next = type === 'recovery'
+    ? '/auth/update-password'
+    : (_next?.startsWith('/') ? _next : '/')
 
   if (token_hash && type) {
     const supabase = await createClient()

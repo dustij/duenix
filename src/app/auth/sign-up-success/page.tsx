@@ -11,7 +11,7 @@ export default function Page() {
     <div className="flex min-h-screen w-full items-center justify-center bg-gray-100">
       <div className="w-full max-w-sm">
         <div className="flex flex-col gap-6">
-          <Card className="rounded-md shadow-md">
+          <Card>
             <CardHeader>
               <CardTitle className="text-2xl">
                 Thank you for signing up!

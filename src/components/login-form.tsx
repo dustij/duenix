@@ -1,7 +1,6 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { createClient } from "@/lib/supabase/client";
@@ -35,7 +34,7 @@ export function LoginForm({
       });
       if (error) throw error;
       // Update this route to redirect to an authenticated route. The user already has an active session.
-      router.push("/protected");
+      router.push("/");
     } catch (error: unknown) {
       setError(error instanceof Error ? error.message : "An error occurred");
     } finally {
@@ -56,7 +55,7 @@ export function LoginForm({
           {/* Welcome message */}
           <div className="flex flex-col">
             <p className="text-center font-bold">Welcome back</p>
-            <p className="text-gray-600 text-center">
+            <p className="text-center text-gray-600">
               Please log in to your account
             </p>
           </div>
@@ -125,7 +124,15 @@ export function LoginForm({
             </div>
             {/* Password */}
             <div className="flex flex-col gap-1.5">
-              <Label htmlFor="password">Password</Label>
+              <div className="flex items-center justify-between">
+                <Label htmlFor="password">Password</Label>
+                <Link
+                  href="/auth/forgot-password"
+                  className="ml-auto inline-block text-sm text-gray-400 underline-offset-4 hover:underline"
+                >
+                  Forgot password?
+                </Link>
+              </div>
               <div className="relative">
                 <Input
                   id="password"
@@ -139,24 +146,9 @@ export function LoginForm({
                   className="absolute top-1/2 right-3 -translate-y-1/2 transform cursor-pointer text-gray-500 hover:text-gray-700"
                   onClick={() => setShowPassword(!showPassword)}
                 >
-                  {showPassword ? <Eye size={16} /> : <EyeOff size={16} />}
+                  {!showPassword ? <Eye size={16} /> : <EyeOff size={16} />}
                 </button>
               </div>
-            </div>
-            {/* Forgot password */}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2.5">
-                <Checkbox id="remember" />
-                <Label htmlFor="remember" className="font-normal text-gray-600">
-                  Remember me
-                </Label>
-              </div>
-              <Link
-                href="/auth/forgot-password"
-                className="ml-auto inline-block text-sm text-gray-400 underline-offset-4 hover:underline"
-              >
-                Forgot password?
-              </Link>
             </div>
             {error && <p className="text-sm text-red-500">{error}</p>}
             {/* Login button */}
