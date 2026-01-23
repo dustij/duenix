@@ -56,7 +56,7 @@ export function LoginForm({
           {/* Welcome message */}
           <div className="flex flex-col">
             <p className="text-center font-bold">Welcome back</p>
-            <p className="text-center text-gray-600">
+            <p className="text-gray-600 text-center">
               Please log in to your account
             </p>
           </div>
@@ -153,7 +153,7 @@ export function LoginForm({
               </div>
               <Link
                 href="/auth/forgot-password"
-                className="ml-auto inline-block text-sm text-gray-600/50 underline-offset-4 hover:underline"
+                className="ml-auto inline-block text-sm text-gray-400 underline-offset-4 hover:underline"
               >
                 Forgot password?
               </Link>

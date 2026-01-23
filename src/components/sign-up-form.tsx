@@ -44,6 +44,10 @@ export function SignUpForm({
         password,
         options: {
           emailRedirectTo: `${window.location.origin}/protected`,
+          data: {
+            full_name: `${firstName + " " + lastName}`,
+            email: email,
+          },
         },
       });
       if (error) throw error;
@@ -67,9 +71,9 @@ export function SignUpForm({
           </div>
           {/* Welcome message */}
           <div className="flex flex-col">
-            <p className="text-center font-bold">Welcome back</p>
-            <p className="text-center text-gray-600">
-              Please log in to your account
+            <p className="text-center font-bold">Create an Account</p>
+            <p className="text-gray-600 text-center">
+              Lets create your free account
             </p>
           </div>
         </div>
@@ -123,29 +127,31 @@ export function SignUpForm({
             </svg>
           </div>
           <form onSubmit={handleSignUp} className="flex flex-col gap-4">
-            {/* First name */}
-            <div className="flex flex-col gap-1.5">
-              <Label htmlFor="first-name">First Name</Label>
-              <Input
-                id="first-name"
-                type="text"
-                placeholder="John"
-                value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
-                required
-              />
-            </div>
-            {/* Last name */}
-            <div className="flex flex-col gap-1.5">
-              <Label htmlFor="last-name">Last Name</Label>
-              <Input
-                id="last-name"
-                type="text"
-                placeholder="Doe"
-                value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
-                required
-              />
+            <div className="flex gap-4">
+              {/* First name */}
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="first-name">First Name</Label>
+                <Input
+                  id="first-name"
+                  type="text"
+                  placeholder="John"
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                  required
+                />
+              </div>
+              {/* Last name */}
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="last-name">Last Name</Label>
+                <Input
+                  id="last-name"
+                  type="text"
+                  placeholder="Doe"
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                  required
+                />
+              </div>
             </div>
             {/* Email */}
             <div className="flex flex-col gap-1.5">
