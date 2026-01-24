@@ -16,11 +16,6 @@ export async function GET(request: NextRequest) {
   // Preserve the original host when behind a proxy/load balancer.
   const forwardedHost = request.headers.get("x-forwarded-host"); // original origin before load balancer
   const isLocalEnv = process.env.NODE_ENV === "development";
-  console.log("OAuth end point called");
-  console.log(`forwarded host: ${forwardedHost}`);
-  console.log(`origin ${origin}`);
-  console.log(`next ${next}`);
-  console.log(`isLocalEnv ${isLocalEnv}`);
   // Build the final redirect URL, honoring forwarded host in production.
   const redirectUrl = isLocalEnv
     ? `${origin}${next}`
@@ -70,6 +65,25 @@ export async function GET(request: NextRequest) {
       await waitForAuthEvent;
       return response;
     }
+
+    // Handle account linking errors
+    if (error && error.message.includes("Multiple accounts")) {
+      // Redirect to a page that explains the issue and offers solutions
+      return NextResponse.redirect(
+        `${origin}/auth/account-linking-error?email=${searchParams.get("email") || ""}`,
+      );
+    }
+  }
+
+  // Check for error params from Supabase redirect
+  const errorCode = searchParams.get("error_code");
+  const errorDescription = searchParams.get("error_description");
+
+  if (errorCode === "unexpected_failure" && errorDescription?.includes("Multiple accounts")) {
+    // Handle the account linking error from the redirect
+    return NextResponse.redirect(
+      `${origin}/auth/account-linking-error`,
+    );
   }
 
   // If anything fails, send the user to an error page with instructions.
