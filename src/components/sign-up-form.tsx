@@ -51,7 +51,7 @@ export function SignUpForm({
         email,
         password,
         options: {
-          emailRedirectTo: getURL(),
+          emailRedirectTo: `/`,
           data: {
             full_name: `${firstName + " " + lastName}`,
             email: email,
