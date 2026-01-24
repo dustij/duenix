@@ -1,15 +1,23 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { createClient } from "@/lib/supabase/client";
+import { getURL } from "@/lib/utils";
 import { Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { FaApple, FaGithub, FaGoogle } from "react-icons/fa";
+import { FaGithub, FaGoogle } from "react-icons/fa";
 
 export function SignUpForm({
   className,
@@ -22,7 +30,6 @@ export function SignUpForm({
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
@@ -32,12 +39,6 @@ export function SignUpForm({
     const supabase = createClient();
     setIsLoading(true);
     setError(null);
-
-    if (!agreedToTerms) {
-      setError("You must agree to the Terms & Conditions");
-      setIsLoading(false);
-      return;
-    }
 
     if (password !== confirmPassword) {
       setError("Passwords do not match");
@@ -66,73 +67,45 @@ export function SignUpForm({
     }
   };
 
+  const handleSocialLogin = async (provider: "github" | "google") => {
+    const supabase = createClient();
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: provider,
+        options: {
+          redirectTo: `${getURL()}/auth/oauth?next=/`,
+          queryParams: {
+            access_type: "offline",
+            prompt: "consent",
+          },
+        },
+      });
+
+      if (error) throw error;
+    } catch (error: unknown) {
+      setError(error instanceof Error ? error.message : "An error occurred");
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="flex min-h-screen w-full items-center justify-center bg-gray-100">
-      {/* Container */}
-      <div className="flex w-xs flex-col gap-6 rounded-md border-gray-200 bg-white p-6 shadow-md">
-        {/* Header */}
-        <div className="flex flex-col gap-2">
-          {/* Title */}
-          <div className="flex items-center justify-center">
-            <p className="text-4xl font-bold text-sky-400">DUENIX</p>
-          </div>
-          {/* Welcome message */}
+      <Card className="w-xs border-gray-200 bg-white">
+        <CardHeader className="flex flex-col gap-2 p-6">
+          <CardTitle className="flex items-center justify-center text-4xl font-bold text-sky-400">
+            DUENIX
+          </CardTitle>
           <div className="flex flex-col">
             <p className="text-center font-bold">Create an Account</p>
-            <p className="text-center text-gray-600">
+            <CardDescription className="text-center text-gray-600">
               Lets create your free account
-            </p>
+            </CardDescription>
           </div>
-        </div>
-        {/* Content */}
-        <div className="flex flex-col gap-4">
-          {/* Social logins */}
-          <div className="flex w-full gap-4">
-            <Button
-              variant="outline"
-              className="h-9 flex-1 cursor-pointer pt-1.5 pb-1.5 shadow-none"
-            >
-              <FaGithub className="h-full! w-full! text-gray-600" />
-            </Button>
-            <Button
-              variant="outline"
-              className="h-9 flex-1 cursor-pointer pt-1.5 pb-1.5 shadow-none"
-            >
-              <FaGoogle className="h-full! w-full! text-gray-600" />
-            </Button>
-            <Button
-              variant="outline"
-              className="h-9 flex-1 cursor-pointer pt-1.5 pb-1.5 shadow-none"
-            >
-              <FaApple className="h-full! w-full! text-gray-600" />
-            </Button>
-          </div>
-          {/* - or - */}
-          <div className="flex items-center gap-3">
-            <svg className="h-px flex-1">
-              <line
-                x1="0"
-                y1="0"
-                x2="100%"
-                y2="0"
-                stroke="currentColor"
-                strokeWidth="1"
-                className="text-gray-300"
-              />
-            </svg>
-            <span className="text-xs text-gray-400">OR</span>
-            <svg className="h-px flex-1">
-              <line
-                x1="0"
-                y1="0"
-                x2="100%"
-                y2="0"
-                stroke="currentColor"
-                strokeWidth="1"
-                className="text-gray-300"
-              />
-            </svg>
-          </div>
+        </CardHeader>
+        <CardContent className="flex flex-col gap-4 p-6 pt-0">
           <form onSubmit={handleSignUp} className="flex flex-col gap-4">
             <div className="flex gap-4">
               {/* First name */}
@@ -180,6 +153,7 @@ export function SignUpForm({
                   id="password"
                   type={showPassword ? "text" : "password"}
                   value={password}
+                  placeholder="•••••••••••"
                   onChange={(e) => setPassword(e.target.value)}
                   required
                 />
@@ -200,6 +174,7 @@ export function SignUpForm({
                   id="confirm-password"
                   type={showConfirmPassword ? "text" : "password"}
                   value={confirmPassword}
+                  placeholder="•••••••••••"
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   required
                 />
@@ -216,28 +191,6 @@ export function SignUpForm({
                 </button>
               </div>
             </div>
-            {/* Terms & conditions */}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2.5">
-                <Checkbox
-                  id="agree"
-                  checked={agreedToTerms}
-                  onCheckedChange={(checked) =>
-                    setAgreedToTerms(checked === true)
-                  }
-                />
-                <Label htmlFor="agree" className="font-normal text-gray-600">
-                  I agree to the{" "}
-                  <Link
-                    href="/auth/terms"
-                    className="text-sm text-gray-600/50 underline underline-offset-4"
-                    target="_blank"
-                  >
-                    Terms & Conditions
-                  </Link>
-                </Label>
-              </div>
-            </div>
             {error && <p className="text-sm text-red-500">{error}</p>}
             {/* Signup button */}
             <div>
@@ -250,10 +203,53 @@ export function SignUpForm({
               </Button>
             </div>
           </form>
-        </div>
-
-        {/* Sign up */}
-        <div className="flex items-center justify-center gap-1.5">
+          {/* - or - */}
+          <div className="flex items-center gap-3">
+            <svg className="h-px flex-1">
+              <line
+                x1="0"
+                y1="0"
+                x2="100%"
+                y2="0"
+                stroke="currentColor"
+                strokeWidth="1"
+                className="text-gray-300"
+              />
+            </svg>
+            <span className="text-xs text-gray-400">OR</span>
+            <svg className="h-px flex-1">
+              <line
+                x1="0"
+                y1="0"
+                x2="100%"
+                y2="0"
+                stroke="currentColor"
+                strokeWidth="1"
+                className="text-gray-300"
+              />
+            </svg>
+          </div>
+          {/* Social logins */}
+          <div className="flex w-full flex-col gap-4">
+            <Button
+              variant="outline"
+              className="w-full cursor-pointer gap-2 shadow-none"
+              onClick={() => handleSocialLogin("github")}
+            >
+              <FaGithub className="h-4 w-4 text-gray-600" />
+              <span className="text-sm">GitHub</span>
+            </Button>
+            <Button
+              variant="outline"
+              className="w-full cursor-pointer gap-2 shadow-none"
+              onClick={() => handleSocialLogin("google")}
+            >
+              <FaGoogle className="h-4 w-4 text-gray-600" />
+              <span className="text-sm">Google</span>
+            </Button>
+          </div>
+        </CardContent>
+        <CardFooter className="flex items-center justify-center gap-1.5 p-6 pt-0">
           <span className="text-sm text-gray-600">
             Already have an account?
           </span>
@@ -263,8 +259,8 @@ export function SignUpForm({
           >
             Log In
           </Link>
-        </div>
-      </div>
+        </CardFooter>
+      </Card>
     </div>
   );
 }
