@@ -1,17 +1,26 @@
-'use client'
+"use client";
 
-import { createClient } from '@/lib/supabase/client'
-import { Button } from '@/components/ui/button'
-import { useRouter } from 'next/navigation'
+import { createClient } from "@/lib/supabase/client";
+import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
+import { useContext } from "react";
+import { UserProfileDispatchContext } from "@/lib/context/user_profile.context";
 
 export function LogoutButton() {
-  const router = useRouter()
+  const router = useRouter();
+  const dispatch = useContext(UserProfileDispatchContext);
 
   const logout = async () => {
-    const supabase = createClient()
-    await supabase.auth.signOut()
-    router.push('/auth/login')
-  }
+    const supabase = createClient();
+    await supabase.auth.signOut();
 
-  return <Button onClick={logout}>Logout</Button>
+    // Clear profile state
+    if (dispatch) {
+      dispatch({ type: "clear_profile" });
+    }
+
+    router.push("/auth/login");
+  };
+
+  return <Button onClick={logout}>Logout</Button>;
 }

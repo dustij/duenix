@@ -16,3 +16,7 @@ export const getURL = () => {
   url = url.endsWith("/") ? url : `${url}/`;
   return url;
 };
+
+export function deepClone<T>(value: T): T {
+  return structuredClone(value);
+}
