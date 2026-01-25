@@ -27,6 +27,7 @@ export function userProfileReducer(
         ...action.payload,
         isLoading: false,
         isLoaded: true,
+        isSigningOut: false,
         error: null,
       };
 
@@ -35,6 +36,12 @@ export function userProfileReducer(
         ...state,
         isLoading: false,
         error: action.payload,
+      };
+
+    case "set_signing_out":
+      return {
+        ...state,
+        isSigningOut: true,
       };
 
     case "clear_profile":
@@ -54,6 +61,7 @@ export interface UserProfile {
   avatarUrl: string | null;
   isLoading: boolean;
   isLoaded: boolean;
+  isSigningOut: boolean;
   error: string | null;
 }
 
@@ -61,8 +69,9 @@ export type UserProfileAction =
   | { type: "set_profile"; payload: UserProfile }
   | { type: "update_avatar"; payload: string }
   | { type: "set_loading" }
-  | { type: "set_loaded"; payload: Omit<UserProfile, "isLoading" | "isLoaded" | "error"> }
+  | { type: "set_loaded"; payload: Omit<UserProfile, "isLoading" | "isLoaded" | "error" | "isSigningOut"> }
   | { type: "set_error"; payload: string }
+  | { type: "set_signing_out" }
   | { type: "clear_profile" };
 
 export const initialUserProfile: UserProfile = {
@@ -72,5 +81,6 @@ export const initialUserProfile: UserProfile = {
   avatarUrl: null,
   isLoading: false,
   isLoaded: false,
+  isSigningOut: false,
   error: null,
 };

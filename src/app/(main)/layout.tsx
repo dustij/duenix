@@ -1,6 +1,7 @@
 import { Navbar } from "@/components/navbar";
-import { ProfileInitializer } from "@/components/profile-initializer";
 import { ProfileGate } from "@/components/profile-gate";
+import { ProfileInitializer } from "@/components/profile-initializer";
+import { Sidebar } from "@/components/sidebar";
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 
@@ -23,9 +24,12 @@ export default async function Layout({
   return (
     <ProfileInitializer userId={user.id}>
       <ProfileGate>
-        <div>
+        <div className="flex h-screen flex-col">
           <Navbar />
-          {children}
+          <div className="flex flex-1 overflow-hidden">
+            <Sidebar />
+            <main className="flex-1 overflow-auto">{children}</main>
+          </div>
         </div>
       </ProfileGate>
     </ProfileInitializer>

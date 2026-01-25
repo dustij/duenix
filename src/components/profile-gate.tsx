@@ -1,8 +1,9 @@
 "use client";
 
-import { useContext } from "react";
 import { UserProfileContext } from "@/lib/context/user_profile.context";
+import { useContext } from "react";
 import { ProfileLoadingScreen } from "./profile-loading-screen";
+import { ProfileSigningOutScreen } from "./profile-signing-out-screen";
 
 export function ProfileGate({ children }: { children: React.ReactNode }) {
   const userProfile = useContext(UserProfileContext);
@@ -13,6 +14,10 @@ export function ProfileGate({ children }: { children: React.ReactNode }) {
 
   if (userProfile.isLoading) {
     return <ProfileLoadingScreen />;
+  }
+
+  if (userProfile.isSigningOut) {
+    return <ProfileSigningOutScreen />;
   }
 
   if (userProfile.error) {
