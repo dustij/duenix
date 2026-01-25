@@ -17,7 +17,7 @@ import { Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { FaGithub, FaGoogle } from "react-icons/fa";
+import { AuthSocialButtons } from "./auth-social-buttons";
 
 export function SignUpForm({
   className,
@@ -233,24 +233,11 @@ export function SignUpForm({
             </svg>
           </div>
           {/* Social logins */}
-          <div className="flex w-full flex-col gap-4">
-            <Button
-              variant="outline"
-              className="w-full cursor-pointer gap-2 shadow-none"
-              onClick={() => handleSocialLogin("github")}
-            >
-              <FaGithub className="h-4 w-4 text-gray-600" />
-              <span className="text-sm">GitHub</span>
-            </Button>
-            <Button
-              variant="outline"
-              className="w-full cursor-pointer gap-2 shadow-none"
-              onClick={() => handleSocialLogin("google")}
-            >
-              <FaGoogle className="h-4 w-4 text-gray-600" />
-              <span className="text-sm">Google</span>
-            </Button>
-          </div>
+          <AuthSocialButtons
+            isLoading={isLoading}
+            loadingMessage="Creating an account..."
+            handleSocialLogin={handleSocialLogin}
+          />
         </CardContent>
         <CardFooter className="flex items-center justify-center gap-1.5 p-6 pt-0">
           <span className="text-sm text-gray-600">

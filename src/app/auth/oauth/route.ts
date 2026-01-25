@@ -13,8 +13,6 @@ export async function GET(request: NextRequest) {
     next = "/";
   }
 
-  console.log(`oauth.GET: origin: ${origin} searchParams: ${searchParams}`);
-
   // Preserve the original host when behind a proxy/load balancer.
   const forwardedHost = request.headers.get("x-forwarded-host"); // original origin before load balancer
   const isLocalEnv = process.env.NODE_ENV === "development";
@@ -24,10 +22,6 @@ export async function GET(request: NextRequest) {
     : forwardedHost
       ? `https://${forwardedHost}${next}`
       : `${origin}${next}`;
-
-  console.log(
-    `oath.GET: forwardedHost: ${forwardedHost} isLocal: ${isLocalEnv}`,
-  );
 
   if (code) {
     // Create the redirect response first so we can attach cookies to it.
@@ -49,26 +43,14 @@ export async function GET(request: NextRequest) {
         },
       },
     );
-    // auth-js fires SIGNED_IN on a setTimeout after exchangeCodeForSession,
-    // so we wait briefly for it to apply cookie changes before returning.
-    const waitForAuthEvent = new Promise<void>((resolve) => {
-      const { data } = supabase.auth.onAuthStateChange((event) => {
-        if (event === "SIGNED_IN" || event === "TOKEN_REFRESHED") {
-          data.subscription.unsubscribe();
-          resolve();
-        }
-      });
-      setTimeout(() => {
-        data.subscription.unsubscribe();
-        resolve();
-      }, 500);
-    });
-
     // Exchange the code for a session; cookies are written via setAll.
+    // Note: Supabase calls setAll asynchronously via an auth state change event
     const { error } = await supabase.auth.exchangeCodeForSession(code);
+
     if (!error) {
-      // Ensure cookies are attached before redirecting back to the app.
-      await waitForAuthEvent;
+      // CRITICAL: Wait for Supabase's auth state change event to fire and call setAll
+      // The SIGNED_IN event is fired on a setTimeout, so we must wait for it
+      await new Promise((resolve) => setTimeout(resolve, 700));
       return response;
     }
 
