@@ -77,10 +77,13 @@ export function SignUpForm({
         provider: provider,
         options: {
           redirectTo: `${getURL()}/auth/oauth?next=/`,
-          queryParams: {
-            access_type: "offline",
-            prompt: "consent",
-          },
+          queryParams:
+            provider == "google"
+              ? {
+                  access_type: "offline",
+                  prompt: "consent",
+                }
+              : {},
         },
       });
 

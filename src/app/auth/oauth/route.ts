@@ -13,6 +13,8 @@ export async function GET(request: NextRequest) {
     next = "/";
   }
 
+  console.log(`oauth.GET: origin: ${origin} searchParams: ${searchParams}`);
+
   // Preserve the original host when behind a proxy/load balancer.
   const forwardedHost = request.headers.get("x-forwarded-host"); // original origin before load balancer
   const isLocalEnv = process.env.NODE_ENV === "development";
@@ -22,6 +24,10 @@ export async function GET(request: NextRequest) {
     : forwardedHost
       ? `https://${forwardedHost}${next}`
       : `${origin}${next}`;
+
+  console.log(
+    `oath.GET: forwardedHost: ${forwardedHost} isLocal: ${isLocalEnv}`,
+  );
 
   if (code) {
     // Create the redirect response first so we can attach cookies to it.
@@ -79,11 +85,12 @@ export async function GET(request: NextRequest) {
   const errorCode = searchParams.get("error_code");
   const errorDescription = searchParams.get("error_description");
 
-  if (errorCode === "unexpected_failure" && errorDescription?.includes("Multiple accounts")) {
+  if (
+    errorCode === "unexpected_failure" &&
+    errorDescription?.includes("Multiple accounts")
+  ) {
     // Handle the account linking error from the redirect
-    return NextResponse.redirect(
-      `${origin}/auth/account-linking-error`,
-    );
+    return NextResponse.redirect(`${origin}/auth/account-linking-error`);
   }
 
   // If anything fails, send the user to an error page with instructions.
