@@ -5,7 +5,8 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export const getURL = () => {
+export async function getURL() {
+  "use server";
   let url =
     process?.env?.NEXT_PUBLIC_SITE_URL ?? // Set this to your site URL in production env.
     process?.env?.NEXT_PUBLIC_VERCEL_URL ?? // Automatically set by Vercel.
@@ -15,7 +16,7 @@ export const getURL = () => {
   // Make sure to include a trailing `/`.
   url = url.endsWith("/") ? url : `${url}/`;
   return url;
-};
+}
 
 export function deepClone<T>(value: T): T {
   return structuredClone(value);

@@ -56,13 +56,13 @@ export function LoginForm({
     setIsLoading(true);
     setError(null);
 
-    console.log("handleSocialLogin: getUrl: " + getURL());
+    console.log("handleSocialLogin: getUrl: " + (await getURL()));
 
     try {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: provider,
         options: {
-          redirectTo: `${getURL()}/auth/oauth?next=/`,
+          redirectTo: `${await getURL()}/auth/oauth?next=/`,
           queryParams:
             provider == "google"
               ? {

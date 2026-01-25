@@ -76,7 +76,7 @@ export function SignUpForm({
       const { error } = await supabase.auth.signInWithOAuth({
         provider: provider,
         options: {
-          redirectTo: `${getURL()}/auth/oauth?next=/`,
+          redirectTo: `${await getURL()}/auth/oauth?next=/`,
           queryParams:
             provider == "google"
               ? {
