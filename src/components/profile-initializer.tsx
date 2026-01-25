@@ -18,6 +18,8 @@ export function ProfileInitializer({
     if (!userId || !dispatch) return;
 
     async function loadProfile() {
+      if (!dispatch) return;
+
       dispatch({ type: "set_loading" });
 
       try {
