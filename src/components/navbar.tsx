@@ -1,6 +1,8 @@
 "use client";
+
 import { BellIcon, HelpCircle, Settings } from "lucide-react";
 import { AvatarDropdown } from "./avatar-dropdown";
+import { SearchBar } from "./searchbar";
 import { Button } from "./ui/button";
 
 export function Navbar() {
@@ -9,7 +11,8 @@ export function Navbar() {
       <div className="flex items-center justify-center">
         <span className="text-2xl font-bold text-sky-400">DUENIX</span>
       </div>
-      <div className="flex flex-row gap-1">
+      <SearchBar />
+      <div className="flex flex-row items-center gap-1">
         <Button variant="ghost" className="rounded-full" size="icon_md">
           <BellIcon />
         </Button>
